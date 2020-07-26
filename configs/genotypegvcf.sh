@@ -7,4 +7,4 @@
 
 module load java/1.8.0_131
 
-./gatk GenotypeGVCFs -R reference.fasta -V gendb://path_to_genomicsdbdir -d all-ADM -O ADM-chr01.vcf.gz -L chr01 -all-sites
+./gatk GenotypeGVCFs -R reference.fasta -V gendb://path_to_genomicsdbdir -O ADM-chr01.vcf.gz -L chr01 -all-sites
