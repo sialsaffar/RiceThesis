@@ -15,16 +15,27 @@ vcf_file = sys.argv[1]
 vcf = VCF(vcf_file)
 
 sample = vcf.samples[0]
-sample_a = "".join([sample, '_a'])
-sample_b = "".join([sample, '_b'])
+sample_a = ''.join([sample, '_a'])
+sample_b = ''.join([sample, '_b'])
 
+# Getting the vcf header
+rawheader = vcf.raw_header
+newline = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t%s"
 
-header = vcf.raw_header
+headerlist = []
+for line in rawheader.split('\n'):
+    if line.startswith('##'):
+        headerlist.append(line)
+    else:
+        pass
 
-w_a = Writer.from_string("".join([sample, '_a.vcf.gz']), header % sample_a)
+headerlist.append(newline)
+header = '\n'.join(map(str, headerlist))
+
+w_a = Writer.from_string(''.join([sample, '_a.vcf.gz']), header % sample_a)
 w_a.write_header()
 
-w_b = Writer.from_string("".join([sample, '_b.vcf.gz']), header % sample_b)
+w_b = Writer.from_string(''.join([sample, '_b.vcf.gz']), header % sample_b)
 w_b.write_header()
 
 
@@ -39,8 +50,8 @@ for v in vcf:
             self.phased = li[-1]
 
         def __str__(self):
-            sep = "/|"[int(self.phased)]
-            return sep.join("0123."[a] for a in self.alleles)
+            sep = '/|'[int(self.phased)]
+            return sep.join('0123.'[a] for a in self.alleles)
         __repr__ = __str__
 
     genotypes = [Genotype(li) for li in gts]
