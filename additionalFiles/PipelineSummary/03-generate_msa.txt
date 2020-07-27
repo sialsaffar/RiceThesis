@@ -11,6 +11,10 @@ Note: The sample names in the newly generated two VCFs have now the "_a" and "_b
 
     ./haplotypeVCF.py ADM-chr01-accession.vcf.gz
 
+    Then create an index with
+
+    ./tabix -p vcf file.vcf.gz
+
 3. Generate a consensus sequence in fasta format by replacing the REF base in the reference sequence with that of the ALT base found in the VCF.
 
     ./getAltFASTA.py <reference.fasta> <input.vcf.gz> <accession name> <chromosome name> <output name>
