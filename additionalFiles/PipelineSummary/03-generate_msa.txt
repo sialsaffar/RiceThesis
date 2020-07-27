@@ -1,0 +1,25 @@
+
+## Pipeline used to generate the MSA
+
+1. Split multi-sample VCFs into single-sample VCFs using SelectVariants.
+
+    while read accession; do `$gatk SelectVariants --reference chr01.fasta --variant ADM-chr01-selected.vcf.gz --output ADM-chr01-${accession}.vcf.gz -sn ${accession} --intervals chr01` ; done < list_of_adm_accessions
+
+2. For each single-sample VCF, make two VCFs in which the ALT represents the genotype of one of the alleles in the original VCF file (haploids).
+
+Note: The sample names in the newly generated two VCFs have now the "_a" and "_b" suffixes. These files are not complete VCFs, they are missing some information as they are merely intermediates for the next step.
+
+    ./haplotypeVCF.py ADM-chr01-accession.vcf.gz
+
+3. Generate a consensus sequence in fasta format by replacing the REF base in the reference sequence with that of the ALT base found in the VCF.
+
+    ./getAltFASTA.py <reference.fasta> <input.vcf.gz> <accession name> <chromosome name> <output name>
+
+4. Concatenate all fasta sequences per group into one multi-sample sequence alignment file
+
+    cat <accession.fasta> >> ADM-chr01.fasta
+
+5. Missing genotypes are all converted to gaps
+
+    sed -i 's/\*/\./g' ADM-chr01.fasta
+
