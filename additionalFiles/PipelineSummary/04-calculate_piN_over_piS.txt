@@ -1,0 +1,20 @@
+
+## Pipeline for running SNPGenie scripts:
+
+1. The script `snpgenie_within_group.pl` takes 2 files as an input: a MSA file in fasta format and a coding region (CDS) annotations in GTF format. Note: This script needs to be run twice; once for the annotations on the forward "+" strand, and the other for the reverse "-" strand.
+
+    ./snpgenie_within_group.pl --fasta_file_name=MSA.fasta --gtf_file_name=CDS.gtf --procs_per_node=<INT>
+    
+2. Run `fasta2revcom.pl` script on the MSA file to generate reverse complement sequence:
+
+    ./fasta2recom.pl MSA.fasta
+    
+3. Run `gtf2revcom.pl` script to generate CDS annotations for the reverse "-" strand. Two argument required: A GTF file with CDS annotations and the length of the sequence (e.g. chr01 = 43270923).
+
+    ./gtf2revcom.pl CDS.gtf 43270923
+    
+4. Now run `snpgenie_within_group.pl` again but with the revcom files.
+
+    ./snpgenie_within_group.pl --fasta_file_name=MSA_revcom.fasta --gtf_file_name=CDS_revcom.gtf procs_per_node=<INT>
+    
+    Note: Output files have the same name, and files from a previous run will be overwritten. So renaming/moving output files immediately after each run is advised.
