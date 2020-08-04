@@ -49,3 +49,8 @@
 
     gffread -E si-chr01.gff3 -T -o- > si-chr01.gtf
 
+10. Make GTF file with only CDS annotations
+
+    awk ' !/^#/ { if($3 ~ "CDS") print } si-chr01.gtf > si-chr01-CDS.gtf
+
+
