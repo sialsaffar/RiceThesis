@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-./getAltFASTA.py <reference.fasta> <input.vcf.gz> <accession> <chrom> <output>
+./getAltFASTA.py <reference.fasta> <input.vcf.gz> <accession> <chrom>
 """
 
 import sys
