@@ -1,0 +1,87 @@
+bootstrap: docker
+From: fedora:32
+
+%help
+    ... a container for SNP analysis tools
+
+%post
+    dnf -y update
+    dnf -y install bc bzip2 bzip2-devel findutils git lftp mlocate tcsh unzip zip wget which
+    dnf -y install gcc-c++ make autoconf213 autoconf
+    dnf -y install zlib zlib-devel libcurl libcurl-devel xz xz-devel xz-libs openssl openssl-devel
+    dnf -y install java-1.8.0-openjdk-headless
+    dnf -y install R
+    dnf -y install python3-devel python3-numpy python3-Cython
+    pip install pyfaidx multiqc click coloredlogs
+    
+
+    echo 'Installing samtools, bcftools, vcftools, and cyvcf2 '
+    dnf -y install htslib htslib-devel htslib-tools
+    dnf -y install samtools bcftools vcftools
+    pip install cyvcf2
+    
+    echo 'Installing perl prerequisites: '
+    dnf -y install perl-App-cpanminus
+    dnf -y install perl-XML-DOM-XPath
+    cpanm install BioPerl
+    cpanm install Clone
+    cpanm install Statistics::R
+    cpanm install JSON
+    cpanm install Carp
+    cpanm install Sort::Naturally
+    cpanm install File::Share
+    cpanm install File::ShareDir::Install
+    cpanm install Bio::DB::Fasta
+    cpanm install Bio::DB::Taxonomy
+    cpanm install Bio::Ontology::OntologyEngineI
+    cpanm install Bio::OntologyIO::obo
+    cpanm install Bio::Seq
+    cpanm install Bio::SeqIO
+    cpanm install Bio::Tools::CodonTable
+    cpanm install Bio::Tools::GFF
+
+    echo 'Installing AGAT from https://github.com/NBISweden/AGAT.git '
+    cd /opt
+    git clone https://github.com/NBISweden/AGAT.git
+    cd AGAT
+    perl Makefile.PL
+    make
+    make test
+    make install
+
+    echo 'Installing FastQC from http://www.bioinformatics.babraham.ac.uk/projects/fastqc/ '
+    cd /opt
+    wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.8.zip
+    unzip fastqc_v0.11.8.zip
+    chmod +x FastQC/fastqc
+    
+    echo 'Installing GFFRead from https://github.com/gpertea/gffread '
+    cd /opt
+    git clone https://github.com/gpertea/gffread
+    cd gffread
+    make release
+
+    echo 'Installing GATK v4.1.3.0 from the BROAD Institute '
+    cd /opt
+    wget https://github.com/broadinstitute/gatk/releases/download/4.1.3.0/gatk-4.1.3.0.zip
+    unzip gatk-4.1.3.0.zip
+    
+    echo 'Installing SNPGenie from https://github.com/chasewnelson/SNPGenie.git '
+    cd /opt
+    git clone https://github.com/chasewnelson/SNPGenie.git
+    
+    echo 'Installing customized scripts for SNP analysis '
+    cd /opt
+    wget https://github.com/sialsaffar/RiceThesis/archive/master.zip
+    unzip master.zip
+    mv RiceThesis-master/scripts/ .
+    rm -rf RiceThesis-master/ master.zip
+    
+
+%environment
+    export PATH=$PATH:/opt/FastQC
+    export PATH=$PATH:/opt/SNPGenie
+    export PATH=$PATH:/opt/gatk-4.1.3.0
+    export PATH=$PATH:/opt/scripts
+    export PATH=$PATH:/opt/AGAT/bin
+    export PATH=$PATH:/opt/gffread
